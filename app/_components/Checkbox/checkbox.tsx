@@ -1,15 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { forwardRef, memo, useImperativeHandle, useState } from 'react'
 import { Prefecture } from '@/types/prefecture'
 
-export default function Checkbox({data, onClick}: CheckboxProps) {
+const Checkbox = forwardRef(({data, onClick, disable}: CheckboxProps, _ref) => {
   const [isChecked, setCheck] = useState(false)
 
   const onClickHandle = () => {
+    if (disable) {
+      return
+    }
     setCheck(!isChecked)
     onClick(data, isChecked)
   }
+
+  useImperativeHandle(_ref, () => ({
+    reset: () => setCheck(false)
+  }))
 
   return (
     <div
@@ -19,9 +26,14 @@ export default function Checkbox({data, onClick}: CheckboxProps) {
       { data.prefName }
     </div>
   )
-}
+})
+
+Checkbox.displayName = 'Checkbox'
+
+export default Checkbox
 
 type CheckboxProps = {
   data: Prefecture,
-  onClick: Function
+  onClick: Function,
+  disable: Boolean
 }
