@@ -1,10 +1,14 @@
-name: Run Unit Tests and Lint Files
-"on": push
+name: Linter
+on: [pull_request]
 jobs:
-  unit_test-lint:
+  eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-              npm run build
-              npm run lint
+      - uses: actions/checkout@v3
+      - name: eslint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          eslint_flags: "src/**/*.{ts,tsx}"
+          fail_on_error: true
